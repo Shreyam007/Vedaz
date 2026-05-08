@@ -2,6 +2,7 @@ services:
   - type: web
     name: vedaz-backend
     env: node
+    rootDir: server
     buildCommand: npm install
     startCommand: node server.js
     envVars:
