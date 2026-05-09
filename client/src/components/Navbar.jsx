@@ -5,87 +5,134 @@ import { Calendar, Users, Menu, X } from 'lucide-react';
 const Navbar = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState(null);
 
   const isActive = (path) => location.pathname.startsWith(path);
 
+  const getLinkStyle = (path) => {
+    const active = isActive(path);
+    const hovered = hoveredLink === path;
+    
+    return {
+      color: active ? '#818CF8' : (hovered ? '#F1F5F9' : '#94A3B8'),
+      textDecoration: 'none',
+      fontSize: '14px',
+      fontWeight: 500,
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      padding: '6px 12px',
+      borderRadius: '8px',
+      background: active ? 'rgba(99,102,241,0.12)' : (hovered ? 'rgba(255,255,255,0.06)' : 'transparent'),
+      transition: 'all 0.2s ease'
+    };
+  };
+
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/[0.06] transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-20">
-            {/* Logo */}
-            <div className="flex items-center">
-              <Link to="/" className="flex items-center gap-2 group">
-                <div className="flex items-center justify-center relative">
-                  <span className="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-teal-400 bg-clip-text text-transparent group-hover:from-teal-400 group-hover:to-indigo-400 transition-all duration-500">
-                    ⚡ Vedaz
-                  </span>
-                </div>
-              </Link>
-            </div>
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+        background: 'rgba(10,15,30,0.85)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        height: '64px',
+        display: 'flex', alignItems: 'center',
+        padding: '0 24px',
+        justifyContent: 'space-between'
+      }}>
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            <span style={{
+              background: 'linear-gradient(135deg, #818CF8, #34D399)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontSize: '22px', fontWeight: 800,
+              letterSpacing: '-0.03em'
+            }}>
+              ⚡ Vedaz
+            </span>
+          </Link>
+        </div>
 
-            {/* Desktop Links */}
-            <div className="hidden md:flex items-center space-x-8">
-              <Link
-                to="/experts"
-                className={`group flex items-center gap-2 h-full px-1 font-semibold transition-all duration-200 relative ${
-                  isActive('/experts') ? 'text-indigo-400' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <Users className={`w-5 h-5 ${isActive('/experts') ? 'text-indigo-400' : 'group-hover:text-indigo-400 transition-colors'}`} />
-                <span>Experts</span>
-                <span className={`absolute bottom-5 left-0 w-full h-[2px] bg-indigo-500 rounded-t-md transform origin-left transition-transform duration-300 ${isActive('/experts') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
-              </Link>
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-4">
+          <Link
+            to="/experts"
+            style={getLinkStyle('/experts')}
+            onMouseEnter={() => setHoveredLink('/experts')}
+            onMouseLeave={() => setHoveredLink(null)}
+          >
+            <Users size={18} />
+            <span>Experts</span>
+          </Link>
 
-              <Link
-                to="/my-bookings"
-                className={`group flex items-center gap-2 h-full px-1 font-semibold transition-all duration-200 relative ${
-                  isActive('/my-bookings') ? 'text-indigo-400' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <Calendar className={`w-5 h-5 ${isActive('/my-bookings') ? 'text-indigo-400' : 'group-hover:text-indigo-400 transition-colors'}`} />
-                <span>My Bookings</span>
-                <span className={`absolute bottom-5 left-0 w-full h-[2px] bg-indigo-500 rounded-t-md transform origin-left transition-transform duration-300 ${isActive('/my-bookings') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
-              </Link>
-            </div>
+          <Link
+            to="/my-bookings"
+            style={getLinkStyle('/my-bookings')}
+            onMouseEnter={() => setHoveredLink('/my-bookings')}
+            onMouseLeave={() => setHoveredLink(null)}
+          >
+            <Calendar size={18} />
+            <span>My Bookings</span>
+          </Link>
+        </div>
 
-            {/* Mobile Menu Button */}
-            <div className="flex items-center md:hidden">
-              <button 
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="text-slate-400 hover:text-white p-2"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-            </div>
-          </div>
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)}
+            style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
+          >
+            <Menu size={24} />
+          </button>
         </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[100] bg-[#0A0F1E]/95 backdrop-blur-2xl animate-fade-slide-up flex flex-col justify-center items-center">
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 100,
+          background: 'rgba(10,15,30,0.95)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'center', alignItems: 'center',
+          animation: 'fadeSlideUp 0.3s ease forwards'
+        }}>
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="absolute top-6 right-6 text-slate-400 hover:text-white p-2"
+            style={{
+              position: 'absolute', top: '20px', right: '20px',
+              background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer'
+            }}
           >
-            <X className="w-8 h-8" />
+            <X size={32} />
           </button>
           
-          <div className="flex flex-col gap-8 text-center">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', textAlign: 'center' }}>
             <Link 
               to="/experts" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`text-3xl font-bold flex items-center justify-center gap-4 ${isActive('/experts') ? 'text-indigo-400' : 'text-white'}`}
+              style={{
+                textDecoration: 'none', fontSize: '24px', fontWeight: 700,
+                color: isActive('/experts') ? '#818CF8' : '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px'
+              }}
             >
-              <Users className="w-8 h-8" /> Experts
+              <Users size={28} /> Experts
             </Link>
             <Link 
               to="/my-bookings" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`text-3xl font-bold flex items-center justify-center gap-4 ${isActive('/my-bookings') ? 'text-indigo-400' : 'text-white'}`}
+              style={{
+                textDecoration: 'none', fontSize: '24px', fontWeight: 700,
+                color: isActive('/my-bookings') ? '#818CF8' : '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px'
+              }}
             >
-              <Calendar className="w-8 h-8" /> Bookings
+              <Calendar size={28} /> Bookings
             </Link>
           </div>
         </div>

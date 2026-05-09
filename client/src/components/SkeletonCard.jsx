@@ -1,43 +1,82 @@
-const SkeletonCard = () => {
+import React from 'react';
+
+const SkeletonCard = ({ index = 0 }) => {
   return (
-    <div className="glass h-full flex flex-col overflow-hidden relative">
-      {/* Header Skeleton */}
-      <div className="h-24 bg-slate-800/50 animate-shimmer" style={{
-        backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)',
-        backgroundSize: '200% 100%'
-      }} />
+    <div 
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        borderRadius: '20px',
+        overflow: 'hidden',
+        animationDelay: `${index * 80}ms`,
+        animationFillMode: 'both',
+        height: '320px',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+      className="animate-stagger"
+    >
+      <div 
+        className="animate-shimmer"
+        style={{
+          height: '100px',
+          background: 'rgba(255,255,255,0.04)',
+          position: 'relative',
+        }}
+      >
+        <div 
+          className="animate-shimmer"
+          style={{
+            width: '64px', height: '64px', borderRadius: '50%',
+            border: '3px solid #0F1629',
+            position: 'absolute', bottom: '-28px', left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(255,255,255,0.08)'
+          }}
+        />
+      </div>
 
-      <div className="px-6 pb-6 flex flex-col flex-1">
-        {/* Avatar Skeleton */}
-        <div className="-mt-10 mb-4">
-          <div className="w-16 h-16 rounded-full border-[3px] border-[#0A0F1E] bg-slate-800 animate-shimmer" style={{
-            backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)',
-            backgroundSize: '200% 100%'
-          }} />
+      <div style={{ padding: '40px 20px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+        <div 
+          className="animate-shimmer"
+          style={{
+            height: '24px', width: '60%', borderRadius: '4px',
+            background: 'rgba(255,255,255,0.04)', marginBottom: '12px'
+          }}
+        />
+        
+        <div 
+          className="animate-shimmer"
+          style={{
+            height: '20px', width: '30%', borderRadius: '10px',
+            background: 'rgba(255,255,255,0.04)', marginBottom: '20px'
+          }}
+        />
+
+        <div style={{ display: 'flex', gap: '20px', marginBottom: 'auto', width: '100%', justifyContent: 'center' }}>
+          <div 
+            className="animate-shimmer"
+            style={{
+              height: '18px', width: '20%', borderRadius: '4px',
+              background: 'rgba(255,255,255,0.04)'
+            }}
+          />
+          <div 
+            className="animate-shimmer"
+            style={{
+              height: '18px', width: '20%', borderRadius: '4px',
+              background: 'rgba(255,255,255,0.04)'
+            }}
+          />
         </div>
 
-        {/* Name and Category Skeleton */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="w-1/2 h-5 rounded bg-slate-800 animate-shimmer" style={{ backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)', backgroundSize: '200% 100%' }} />
-          <div className="w-16 h-5 rounded-full bg-slate-800 animate-shimmer" style={{ backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)', backgroundSize: '200% 100%' }} />
-        </div>
-
-        {/* Bio lines Skeleton */}
-        <div className="space-y-2 mb-6">
-          <div className="w-full h-3 rounded bg-slate-800 animate-shimmer" style={{ backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)', backgroundSize: '200% 100%' }} />
-          <div className="w-4/5 h-3 rounded bg-slate-800 animate-shimmer" style={{ backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)', backgroundSize: '200% 100%' }} />
-        </div>
-
-        <div className="flex-1" />
-
-        {/* Stats Row Skeleton */}
-        <div className="pt-4 border-t border-white/[0.04] flex justify-between mb-6">
-          <div className="w-20 h-4 rounded bg-slate-800 animate-shimmer" style={{ backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)', backgroundSize: '200% 100%' }} />
-          <div className="w-12 h-4 rounded bg-slate-800 animate-shimmer" style={{ backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)', backgroundSize: '200% 100%' }} />
-        </div>
-
-        {/* Button Skeleton */}
-        <div className="w-full h-10 rounded-xl bg-slate-800 animate-shimmer" style={{ backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%)', backgroundSize: '200% 100%' }} />
+        <div 
+          className="animate-shimmer"
+          style={{
+            height: '44px', width: '100%', borderRadius: '12px',
+            background: 'rgba(255,255,255,0.04)', marginTop: '20px'
+          }}
+        />
       </div>
     </div>
   );

@@ -1,35 +1,10 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import useExpertDetail from '../hooks/useExpertDetail';
 import useSocket from '../hooks/useSocket';
 import SlotGrid from '../components/SlotGrid';
 import Loader from '../components/Loader';
 import ErrorMessage from '../components/ErrorMessage';
 import { Star, Briefcase, ChevronLeft, ShieldCheck } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-const getCategoryColor = (category) => {
-  switch (category) {
-    case 'Technology': return 'bg-indigo-500/20 text-indigo-400';
-    case 'Finance': return 'bg-emerald-500/20 text-emerald-400';
-    case 'Health': return 'bg-rose-500/20 text-rose-400';
-    case 'Legal': return 'bg-amber-500/20 text-amber-400';
-    case 'Marketing': return 'bg-sky-500/20 text-sky-400';
-    case 'Design': return 'bg-fuchsia-500/20 text-fuchsia-400';
-    default: return 'bg-slate-500/20 text-slate-400';
-  }
-};
-
-const getCategoryGradient = (category) => {
-  switch (category) {
-    case 'Technology': return 'from-indigo-500 to-purple-500';
-    case 'Finance': return 'from-emerald-500 to-teal-500';
-    case 'Health': return 'from-rose-500 to-pink-500';
-    case 'Legal': return 'from-amber-500 to-orange-500';
-    case 'Marketing': return 'from-sky-500 to-blue-500';
-    case 'Design': return 'from-fuchsia-500 to-violet-500';
-    default: return 'from-slate-500 to-slate-400';
-  }
-};
 
 const ExpertDetailPage = () => {
   const { id } = useParams();
@@ -46,87 +21,129 @@ const ExpertDetailPage = () => {
   if (!expert) return <ErrorMessage message="Expert not found." />;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-slide-up">
-      <Link to="/experts" className="inline-flex items-center text-slate-400 hover:text-white transition-colors font-semibold mb-8 group">
-        <div className="w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mr-3 group-hover:bg-indigo-500/20 group-hover:border-indigo-500/50 transition-all">
-          <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-        </div>
-        Back to Experts
-      </Link>
+    <div style={{ minHeight: '100vh', background: '#0A0F1E', paddingTop: '80px', paddingBottom: '60px' }}>
+      <div style={{ padding: '0 24px', maxWidth: '1100px', margin: '0 auto' }}>
+        
+        <Link to="/experts" style={{
+          display: 'inline-flex', alignItems: 'center', gap: '8px',
+          color: '#6366F1', background: 'rgba(99,102,241,0.1)',
+          border: '1px solid rgba(99,102,241,0.2)',
+          padding: '8px 16px', borderRadius: '10px',
+          cursor: 'pointer', fontSize: '14px', fontWeight: 500,
+          marginBottom: '32px', transition: 'all 0.2s ease',
+          textDecoration: 'none'
+        }}>
+          <ChevronLeft size={16} /> Back to Experts
+        </Link>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* LEFT COLUMN - Profile */}
-        <div className="w-full lg:w-2/5 flex flex-col gap-6">
-          <div className="glass p-8 relative overflow-hidden">
-            {/* Background Glow */}
-            <div className={`absolute -top-32 -right-32 w-64 h-64 rounded-full blur-3xl opacity-20 bg-gradient-to-br ${getCategoryGradient(expert.category)} pointer-events-none`} />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px' }} className="md:grid-cols-[1fr_1.6fr]">
+          
+          {/* LEFT — EXPERT PROFILE CARD */}
+          <div style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: '24px', padding: '40px 32px',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            textAlign: 'center',
+            height: 'fit-content'
+          }}>
+            <div style={{
+              width: '120px', height: '120px', borderRadius: '50%',
+              background: 'linear-gradient(135deg, #6366F1, #34D399)',
+              padding: '3px', margin: '0 auto 20px', display: 'flex'
+            }}>
+              {expert.profileImage ? (
+                <img 
+                  src={expert.profileImage} 
+                  alt={expert.name} 
+                  style={{ borderRadius: '50%', width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
+              ) : (
+                <div style={{
+                  borderRadius: '50%', width: '100%', height: '100%',
+                  background: '#0A0F1E', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#fff', fontSize: '40px', fontWeight: 'bold'
+                }}>
+                  {expert.name.charAt(0)}
+                </div>
+              )}
+            </div>
 
-            <div className="flex flex-col items-center text-center">
-              {/* Avatar with Gradient Ring */}
-              <div className="relative mb-6">
-                <div className={`absolute inset-0 -m-1 rounded-full bg-gradient-to-tr ${getCategoryGradient(expert.category)} animate-spin-slow`} style={{ animationDuration: '4s' }} />
-                <div className="relative w-24 h-24 rounded-full border-4 border-[#0A0F1E] bg-[#0A0F1E] overflow-hidden">
-                  {expert.profileImage ? (
-                    <img src={expert.profileImage} alt={expert.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className={`w-full h-full flex items-center justify-center font-bold text-3xl text-white bg-gradient-to-br ${getCategoryGradient(expert.category)}`}>
-                      {expert.name.charAt(0)}
-                    </div>
-                  )}
+            <h1 style={{
+              color: '#FFFFFF',
+              fontSize: '28px', fontWeight: 800,
+              letterSpacing: '-0.03em',
+              marginBottom: '12px'
+            }}>
+              {expert.name}
+            </h1>
+
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: '5px',
+              background: 'rgba(16,185,129,0.12)', color: '#34D399',
+              border: '1px solid rgba(16,185,129,0.25)',
+              borderRadius: '999px', padding: '4px 12px',
+              fontSize: '12px', fontWeight: 600, marginBottom: '20px'
+            }}>
+              <ShieldCheck size={14} /> Verified
+            </div>
+
+            <div style={{
+              display: 'flex', justifyContent: 'center', gap: '0',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: '16px', padding: '16px', marginBottom: '24px'
+            }}>
+              <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', padding: '0 24px' }}>
+                <div style={{ color: '#F1F5F9', fontSize: '22px', fontWeight: 700 }}>
+                  {expert.rating?.toFixed(1) || '5.0'}
+                </div>
+                <div style={{ color: '#64748B', fontSize: '12px', fontWeight: 500, textTransform: 'uppercase' }}>
+                  Rating
                 </div>
               </div>
-
-              <h1 className="text-3xl font-extrabold text-white mb-2">{expert.name}</h1>
-              
-              <div className="flex items-center gap-2 mb-6">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getCategoryColor(expert.category)}`}>
-                  {expert.category}
-                </span>
-                <span className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/[0.04] border border-white/[0.08] text-slate-300">
-                  <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" /> Verified
-                </span>
-              </div>
-
-              <div className="w-full grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl py-3 flex flex-col items-center">
-                  <div className="flex items-center gap-1.5 text-amber-400 mb-1">
-                    <Star className="w-4 h-4 fill-amber-400" />
-                    <span className="font-bold text-lg">{expert.rating?.toFixed(1) || '5.0'}</span>
-                  </div>
-                  <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Rating</span>
+              <div style={{ padding: '0 24px' }}>
+                <div style={{ color: '#F1F5F9', fontSize: '22px', fontWeight: 700 }}>
+                  {expert.experience}
                 </div>
-                <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl py-3 flex flex-col items-center">
-                  <div className="flex items-center gap-1.5 text-white mb-1">
-                    <Briefcase className="w-4 h-4 text-indigo-400" />
-                    <span className="font-bold text-lg">{expert.experience}</span>
-                  </div>
-                  <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Years Exp</span>
+                <div style={{ color: '#64748B', fontSize: '12px', fontWeight: 500, textTransform: 'uppercase' }}>
+                  Years Exp
                 </div>
-              </div>
-
-              <div className="text-left w-full">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">About Expert</h3>
-                <p className="text-slate-400 leading-relaxed text-sm">
-                  {expert.bio}
-                </p>
               </div>
             </div>
+
+            <p style={{ color: '#94A3B8', fontSize: '14px', lineHeight: 1.7, textAlign: 'left' }}>
+              {expert.bio}
+            </p>
           </div>
-        </div>
 
-        {/* RIGHT COLUMN - Booking */}
-        <div className="w-full lg:w-3/5 lg:sticky lg:top-28">
-          <div className="glass p-6 sm:p-8 relative overflow-hidden">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-2xl font-extrabold text-white mb-1">Available Sessions</h2>
-                <p className="text-slate-400 text-sm">Select a time slot in your local time zone.</p>
+          {/* RIGHT — SLOT SECTION */}
+          <div style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: '24px', padding: '32px',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            position: 'sticky', top: '88px',
+            height: 'fit-content'
+          }}>
+            <h2 style={{ 
+              color: '#F1F5F9', fontSize: '20px', fontWeight: 700, marginBottom: '20px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between' 
+            }}>
+              Available Sessions
+              
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                background: 'rgba(16,185,129,0.12)', color: '#34D399',
+                border: '1px solid rgba(16,185,129,0.25)',
+                borderRadius: '999px', padding: '4px 10px', fontSize: '12px', fontWeight: 600
+              }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34D399', animation: 'pulse-glow 1.5s infinite' }} />
+                Live
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Live</span>
-              </div>
-            </div>
+            </h2>
             
             <SlotGrid slots={expert.availableSlots} expertId={expert._id} />
           </div>

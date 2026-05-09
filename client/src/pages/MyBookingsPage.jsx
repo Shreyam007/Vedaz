@@ -3,12 +3,12 @@ import useBookings from '../hooks/useBookings';
 import { Search, CalendarDays, Clock, ArrowRight } from 'lucide-react';
 import { formatDate } from '../utils/formatDate';
 import Loader from '../components/Loader';
-import Badge from '../components/Badge';
 import { Link } from 'react-router-dom';
 
 const MyBookingsPage = () => {
   const [emailInput, setEmailInput] = useState('');
   const [emailToSearch, setEmailToSearch] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   
   const { data: bookings, isLoading, isError } = useBookings(emailToSearch);
 
@@ -21,9 +21,9 @@ const MyBookingsPage = () => {
 
   const getStatusBorder = (status) => {
     switch (status?.toLowerCase()) {
-      case 'confirmed': return 'border-l-teal-500';
-      case 'completed': return 'border-l-indigo-500';
-      default: return 'border-l-amber-500';
+      case 'confirmed': return '#10B981';
+      case 'completed': return '#6366F1';
+      default: return '#F59E0B';
     }
   };
 
@@ -38,105 +38,195 @@ const MyBookingsPage = () => {
     return `${Math.abs(diffDays)} day${Math.abs(diffDays) > 1 ? 's' : ''} ago`;
   };
 
-  return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fade-slide-up">
-      <div className="text-center space-y-4 mb-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-indigo-400 to-teal-400 bg-clip-text text-transparent mb-4 tracking-tight">My Bookings</h1>
-        <p className="text-slate-400 max-w-lg mx-auto text-lg">Enter the email address you used during booking to view your upcoming and past sessions.</p>
-      </div>
+  const StatusBadge = ({ status }) => {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === 'pending') {
+      return (
+        <span style={{ 
+          background: 'rgba(245,158,11,0.12)', color: '#FCD34D',
+          border: '1px solid rgba(245,158,11,0.25)', borderRadius: '999px',
+          padding: '4px 12px', fontSize: '12px', fontWeight: 600,
+          display: 'inline-flex', alignItems: 'center', gap: '6px' 
+        }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B', animation: 'pulse-glow 1.5s infinite' }} />
+          {status}
+        </span>
+      );
+    }
+    if (statusLower === 'confirmed') {
+      return (
+        <span style={{ 
+          background: 'rgba(16,185,129,0.12)', color: '#34D399',
+          border: '1px solid rgba(16,185,129,0.25)', borderRadius: '999px',
+          padding: '4px 12px', fontSize: '12px', fontWeight: 600,
+          display: 'inline-flex', alignItems: 'center', gap: '6px' 
+        }}>
+          {status}
+        </span>
+      );
+    }
+    return (
+      <span style={{ 
+        background: 'rgba(99,102,241,0.12)', color: '#818CF8',
+        border: '1px solid rgba(99,102,241,0.25)', borderRadius: '999px',
+        padding: '4px 12px', fontSize: '12px', fontWeight: 600,
+        display: 'inline-flex', alignItems: 'center', gap: '6px' 
+      }}>
+        {status}
+      </span>
+    );
+  };
 
-      <form onSubmit={handleSearch} className="max-w-xl mx-auto relative mb-16 group">
-        <div className="glass ring-1 ring-white/[0.08] focus-within:ring-indigo-500/50 focus-within:shadow-[0_0_24px_rgba(99,102,241,0.2)] transition-all duration-300 rounded-2xl flex items-center p-1.5">
-          <Search className="w-5 h-5 text-slate-400 ml-3 group-focus-within:text-indigo-400 transition-colors" />
-          <input 
-            type="email" 
-            required
-            placeholder="Enter your email address..."
-            className="w-full bg-transparent border-none outline-none text-white px-4 py-3.5 placeholder:text-slate-500"
-            value={emailInput}
-            onChange={(e) => setEmailInput(e.target.value)}
-          />
+  return (
+    <div style={{ minHeight: '100vh', background: '#0A0F1E', paddingTop: '88px', padding: '88px 24px 60px' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        
+        <div style={{ textAlign: 'center' }}>
+          <h1 style={{ color: '#F1F5F9', fontSize: '32px', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '8px' }}>
+            My Bookings
+          </h1>
+          <p style={{ color: '#64748B', fontSize: '15px', marginBottom: '32px' }}>
+            Enter the email address you used during booking to view your upcoming and past sessions.
+          </p>
+        </div>
+
+        <form onSubmit={handleSearch} style={{
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderRadius: '20px', padding: '24px',
+          backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+          marginBottom: '32px',
+          display: 'flex', gap: '12px', alignItems: 'center'
+        }} className="flex-col sm:flex-row">
+          
+          <div style={{ flex: 1, position: 'relative', width: '100%' }}>
+            <input 
+              type="email" 
+              required
+              placeholder="Enter your email address..."
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              style={{
+                width: '100%', padding: '14px 16px',
+                background: isFocused ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)',
+                border: isFocused ? '1px solid rgba(99,102,241,0.7)' : '1px solid rgba(255,255,255,0.10)',
+                borderRadius: '14px', color: '#F1F5F9',
+                fontSize: '15px', fontFamily: 'inherit', outline: 'none',
+                transition: 'all 0.2s ease',
+                boxShadow: isFocused ? '0 0 0 4px rgba(99,102,241,0.12)' : 'none'
+              }}
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+            />
+          </div>
+
           <button 
             type="submit"
-            className="bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md"
+            style={{
+              padding: '14px 28px', borderRadius: '14px', border: 'none',
+              background: 'linear-gradient(135deg, #6366F1, #4F46E5)',
+              color: '#fff', fontSize: '14px', fontWeight: 600,
+              cursor: 'pointer', whiteSpace: 'nowrap',
+              boxShadow: '0 4px 16px rgba(99,102,241,0.35)', fontFamily: 'inherit',
+              width: '100%'
+            }}
+            className="sm:w-auto"
           >
             Search
           </button>
-        </div>
-      </form>
+        </form>
 
-      {isLoading && <Loader />}
-      
-      {isError && (
-        <div className="glass border-red-500/30 bg-red-500/10 text-center text-red-400 p-6 rounded-2xl max-w-xl mx-auto animate-shake">
-          Failed to fetch bookings. Please check your email and try again.
-        </div>
-      )}
-
-      {bookings && bookings.length === 0 && (
-        <div className="text-center glass p-16 rounded-3xl max-w-2xl mx-auto mt-8 animate-fade-slide-up flex flex-col items-center border border-white/[0.04]">
-          <div className="w-24 h-24 rounded-full bg-indigo-500/10 flex items-center justify-center mb-6">
-            <CalendarDays className="w-12 h-12 text-indigo-400 opacity-80" />
+        {isLoading && <Loader />}
+        
+        {isError && (
+          <div className="animate-shake" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#F87171', padding: '16px', borderRadius: '16px', textAlign: 'center', marginBottom: '32px' }}>
+            Failed to fetch bookings. Please check your email and try again.
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3">No bookings found</h3>
-          <p className="text-slate-400 mb-8 max-w-sm">We couldn't find any bookings associated with <strong className="text-white">{emailToSearch}</strong>.</p>
-          <Link 
-            to="/experts" 
-            className="px-8 py-3.5 bg-white/[0.04] text-white rounded-xl border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.16] font-bold transition-all flex items-center gap-2 group"
-          >
-            Search for experts
-            <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      )}
+        )}
 
-      {bookings && bookings.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          {bookings.map((booking, index) => (
-            <div 
-              key={booking._id} 
-              className={`glass p-6 rounded-2xl border-l-[4px] hover:-translate-y-1 transition-all duration-300 animate-stagger-in opacity-0 flex flex-col justify-between ${getStatusBorder(booking.status)}`}
-              style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
-            >
-              <div>
-                <div className="flex items-start gap-4 mb-6">
-                  <img 
-                    src={booking.expertId.profileImage} 
-                    alt={booking.expertId.name} 
-                    className="w-14 h-14 rounded-full object-cover border-2 border-[#0A0F1E] bg-[#0A0F1E]"
-                  />
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-extrabold text-lg text-white">{booking.expertId.name}</h3>
-                    </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 bg-white/[0.04] text-slate-300 rounded border border-white/[0.08]">
-                      {booking.expertId.category}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="space-y-3 mb-6 bg-white/[0.02] p-4 rounded-xl border border-white/[0.04]">
-                  <div className="text-slate-400 text-sm flex items-center gap-3">
-                    <CalendarDays className="w-4 h-4 text-indigo-400" />
-                    <span className="font-medium text-white">{formatDate(booking.date)}</span>
-                  </div>
-                  <div className="text-slate-400 text-sm flex items-center gap-3">
-                    <Clock className="w-4 h-4 text-teal-400" />
-                    <span className="font-medium text-white">{booking.timeSlot}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between pt-4 border-t border-white/[0.04]">
-                <Badge text={booking.status} />
-                <span className="text-sm font-semibold text-slate-500">
-                  {getDaysDiff(booking.date)}
-                </span>
-              </div>
+        {bookings && bookings.length === 0 && (
+          <div className="animate-fade" style={{ textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '64px 24px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.04)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(99,102,241,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+              <CalendarDays size={40} color="#818CF8" style={{ opacity: 0.8 }} />
             </div>
-          ))}
+            <h3 style={{ fontSize: '22px', fontWeight: 700, color: '#fff', marginBottom: '12px' }}>No bookings found</h3>
+            <p style={{ color: '#94A3B8', marginBottom: '32px', maxWidth: '400px' }}>We couldn't find any bookings associated with <strong style={{ color: '#fff' }}>{emailToSearch}</strong>.</p>
+            <Link 
+              to="/experts" 
+              style={{ padding: '14px 32px', background: 'rgba(255,255,255,0.04)', color: '#fff', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease' }}
+            >
+              Search for experts <ArrowRight size={16} />
+            </Link>
+          </div>
+        )}
+
+        {bookings && bookings.length > 0 && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))', gap: '16px' }} className="sm:grid-cols-1 md:grid-cols-2">
+            {bookings.map((booking, index) => (
+              <BookingCard key={booking._id} booking={booking} index={index} getStatusBorder={getStatusBorder} getDaysDiff={getDaysDiff} StatusBadge={StatusBadge} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const BookingCard = ({ booking, index, getStatusBorder, getDaysDiff, StatusBadge }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <div 
+      className="animate-stagger"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        borderLeft: `4px solid ${getStatusBorder(booking.status)}`,
+        borderRadius: '20px', overflow: 'hidden',
+        display: 'flex', flexDirection: 'column', transition: 'all 0.25s ease',
+        animationDelay: `${index * 100}ms`, animationFillMode: 'forwards', opacity: 0,
+        borderColor: isHovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.07)',
+        transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+        boxShadow: isHovered ? '0 16px 48px rgba(0,0,0,0.4)' : 'none'
+      }}
+    >
+      <div style={{ padding: '20px 24px', flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '20px' }}>
+          <img 
+            src={booking.expertId.profileImage} 
+            alt={booking.expertId.name} 
+            style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #0A0F1E', background: '#0A0F1E' }}
+          />
+          <div>
+            <h3 style={{ color: '#F1F5F9', fontWeight: 700, fontSize: '16px', marginBottom: '4px' }}>
+              {booking.expertId.name}
+            </h3>
+            <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', color: '#CBD5E1', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              {booking.expertId.category}
+            </span>
+          </div>
         </div>
-      )}
+        
+        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
+          <div style={{ color: '#94A3B8', fontSize: '13px', display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
+            <CalendarDays size={16} color="#818CF8" />
+            <span style={{ color: '#F1F5F9', fontWeight: 500 }}>{formatDate(booking.date)}</span>
+          </div>
+          <div style={{ color: '#94A3B8', fontSize: '13px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <Clock size={16} color="#34D399" />
+            <span style={{ color: '#F1F5F9', fontWeight: 500 }}>{booking.timeSlot}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <StatusBadge status={booking.status} />
+        <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748B' }}>
+          {getDaysDiff(booking.date)}
+        </span>
+      </div>
     </div>
   );
 };

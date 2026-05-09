@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -11,62 +12,112 @@ const schema = z.object({
 });
 
 const BookingForm = ({ onSubmit, isSubmitting }) => {
-  const { register, handleSubmit, formState: { errors, submitCount } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(schema)
   });
 
-  const baseInputClass = "w-full pl-11 pr-4 py-3 bg-white/[0.04] border rounded-xl outline-none transition-all duration-200 text-white placeholder:text-slate-500 focus:bg-white/[0.06]";
+  const [focusedField, setFocusedField] = useState(null);
+  const [hoveredBtn, setHoveredBtn] = useState(false);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className={`relative ${errors.userName ? 'animate-shake' : ''}`}>
-        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Full Name *</label>
-        <div className="relative group">
-          <User className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${errors.userName ? 'text-red-500' : 'text-slate-500 group-focus-within:text-indigo-400'}`} />
+    <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div className={errors.userName ? 'animate-shake' : ''}>
+        <label style={{ display: 'block', color: '#94A3B8', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>
+          Full Name *
+        </label>
+        <div style={{ position: 'relative' }}>
+          <User size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: errors.userName ? '#EF4444' : (focusedField === 'userName' ? '#6366F1' : '#64748B'), transition: 'color 0.2s ease' }} />
           <input 
             {...register('userName')}
-            className={`${baseInputClass} ${errors.userName ? 'border-red-500/60 focus:border-red-500/60 focus:ring-2 focus:ring-red-500/20' : 'border-white/[0.08] focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20'}`}
+            onFocus={() => setFocusedField('userName')}
+            onBlur={() => setFocusedField(null)}
+            style={{
+              width: '100%', padding: '14px 16px 14px 44px',
+              background: focusedField === 'userName' ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)',
+              border: errors.userName ? '1px solid rgba(239,68,68,0.7)' : (focusedField === 'userName' ? '1px solid rgba(99,102,241,0.7)' : '1px solid rgba(255,255,255,0.10)'),
+              borderRadius: '14px', color: '#F1F5F9',
+              fontSize: '15px', fontFamily: 'inherit', outline: 'none',
+              transition: 'all 0.2s ease',
+              boxShadow: focusedField === 'userName' ? '0 0 0 4px rgba(99,102,241,0.12)' : 'none'
+            }}
             placeholder="John Doe"
           />
         </div>
-        {errors.userName && <p className="text-red-400 text-sm mt-1.5 font-medium">{errors.userName.message}</p>}
+        {errors.userName && <p style={{ color: '#F87171', fontSize: '12px', fontWeight: 500, marginTop: '6px' }}>{errors.userName.message}</p>}
       </div>
 
-      <div className={`relative ${errors.email ? 'animate-shake' : ''}`}>
-        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email Address *</label>
-        <div className="relative group">
-          <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${errors.email ? 'text-red-500' : 'text-slate-500 group-focus-within:text-indigo-400'}`} />
+      <div className={errors.email ? 'animate-shake' : ''}>
+        <label style={{ display: 'block', color: '#94A3B8', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>
+          Email Address *
+        </label>
+        <div style={{ position: 'relative' }}>
+          <Mail size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: errors.email ? '#EF4444' : (focusedField === 'email' ? '#6366F1' : '#64748B'), transition: 'color 0.2s ease' }} />
           <input 
             {...register('email')}
             type="email"
-            className={`${baseInputClass} ${errors.email ? 'border-red-500/60 focus:border-red-500/60 focus:ring-2 focus:ring-red-500/20' : 'border-white/[0.08] focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20'}`}
+            onFocus={() => setFocusedField('email')}
+            onBlur={() => setFocusedField(null)}
+            style={{
+              width: '100%', padding: '14px 16px 14px 44px',
+              background: focusedField === 'email' ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)',
+              border: errors.email ? '1px solid rgba(239,68,68,0.7)' : (focusedField === 'email' ? '1px solid rgba(99,102,241,0.7)' : '1px solid rgba(255,255,255,0.10)'),
+              borderRadius: '14px', color: '#F1F5F9',
+              fontSize: '15px', fontFamily: 'inherit', outline: 'none',
+              transition: 'all 0.2s ease',
+              boxShadow: focusedField === 'email' ? '0 0 0 4px rgba(99,102,241,0.12)' : 'none'
+            }}
             placeholder="john@example.com"
           />
         </div>
-        {errors.email && <p className="text-red-400 text-sm mt-1.5 font-medium">{errors.email.message}</p>}
+        {errors.email && <p style={{ color: '#F87171', fontSize: '12px', fontWeight: 500, marginTop: '6px' }}>{errors.email.message}</p>}
       </div>
 
-      <div className={`relative ${errors.phone ? 'animate-shake' : ''}`}>
-        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Phone Number *</label>
-        <div className="relative group">
-          <Phone className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${errors.phone ? 'text-red-500' : 'text-slate-500 group-focus-within:text-indigo-400'}`} />
+      <div className={errors.phone ? 'animate-shake' : ''}>
+        <label style={{ display: 'block', color: '#94A3B8', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>
+          Phone Number *
+        </label>
+        <div style={{ position: 'relative' }}>
+          <Phone size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: errors.phone ? '#EF4444' : (focusedField === 'phone' ? '#6366F1' : '#64748B'), transition: 'color 0.2s ease' }} />
           <input 
             {...register('phone')}
-            className={`${baseInputClass} ${errors.phone ? 'border-red-500/60 focus:border-red-500/60 focus:ring-2 focus:ring-red-500/20' : 'border-white/[0.08] focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20'}`}
+            onFocus={() => setFocusedField('phone')}
+            onBlur={() => setFocusedField(null)}
+            style={{
+              width: '100%', padding: '14px 16px 14px 44px',
+              background: focusedField === 'phone' ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)',
+              border: errors.phone ? '1px solid rgba(239,68,68,0.7)' : (focusedField === 'phone' ? '1px solid rgba(99,102,241,0.7)' : '1px solid rgba(255,255,255,0.10)'),
+              borderRadius: '14px', color: '#F1F5F9',
+              fontSize: '15px', fontFamily: 'inherit', outline: 'none',
+              transition: 'all 0.2s ease',
+              boxShadow: focusedField === 'phone' ? '0 0 0 4px rgba(99,102,241,0.12)' : 'none'
+            }}
             placeholder="+1 (555) 000-0000"
           />
         </div>
-        {errors.phone && <p className="text-red-400 text-sm mt-1.5 font-medium">{errors.phone.message}</p>}
+        {errors.phone && <p style={{ color: '#F87171', fontSize: '12px', fontWeight: 500, marginTop: '6px' }}>{errors.phone.message}</p>}
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Meeting Notes <span className="text-slate-600 font-normal normal-case tracking-normal">(Optional)</span></label>
-        <div className="relative group">
-          <FileText className="absolute left-4 top-3.5 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+        <label style={{ display: 'block', color: '#94A3B8', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>
+          Meeting Notes (Optional)
+        </label>
+        <div style={{ position: 'relative' }}>
+          <FileText size={20} style={{ position: 'absolute', left: '16px', top: '16px', color: focusedField === 'notes' ? '#6366F1' : '#64748B', transition: 'color 0.2s ease' }} />
           <textarea 
             {...register('notes')}
             rows="3"
-            className={`w-full pl-11 pr-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl outline-none transition-all duration-200 text-white placeholder:text-slate-500 focus:bg-white/[0.06] focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 resize-none`}
+            onFocus={() => setFocusedField('notes')}
+            onBlur={() => setFocusedField(null)}
+            style={{
+              width: '100%', padding: '14px 16px 14px 44px',
+              background: focusedField === 'notes' ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)',
+              border: focusedField === 'notes' ? '1px solid rgba(99,102,241,0.7)' : '1px solid rgba(255,255,255,0.10)',
+              borderRadius: '14px', color: '#F1F5F9',
+              fontSize: '15px', fontFamily: 'inherit', outline: 'none',
+              transition: 'all 0.2s ease',
+              boxShadow: focusedField === 'notes' ? '0 0 0 4px rgba(99,102,241,0.12)' : 'none',
+              resize: 'none'
+            }}
             placeholder="Any specific topics you want to discuss?"
           ></textarea>
         </div>
@@ -75,10 +126,22 @@ const BookingForm = ({ onSubmit, isSubmitting }) => {
       <button 
         type="submit" 
         disabled={isSubmitting}
-        className="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold py-4 rounded-xl hover:shadow-[0_0_32px_rgba(99,102,241,0.5)] hover:-translate-y-[1px] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0 flex justify-center items-center mt-4"
+        onMouseEnter={() => setHoveredBtn(true)}
+        onMouseLeave={() => setHoveredBtn(false)}
+        style={{
+          width: '100%', padding: '16px',
+          background: isSubmitting ? 'rgba(99,102,241,0.5)' : 'linear-gradient(135deg, #6366F1, #4F46E5)',
+          border: 'none', borderRadius: '14px', color: '#fff',
+          fontSize: '16px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer',
+          transition: 'all 0.25s ease', marginTop: '8px',
+          boxShadow: (!isSubmitting && hoveredBtn) ? '0 12px 40px rgba(99,102,241,0.55)' : '0 8px 30px rgba(99,102,241,0.4)',
+          transform: (!isSubmitting && hoveredBtn) ? 'translateY(-2px)' : 'translateY(0)',
+          fontFamily: 'inherit',
+          display: 'flex', justifyContent: 'center', alignItems: 'center'
+        }}
       >
         {isSubmitting ? (
-          <Loader2 className="w-6 h-6 animate-spin text-white" />
+          <Loader2 size={24} className="animate-spin" />
         ) : (
           'Confirm Booking'
         )}

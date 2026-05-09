@@ -8,7 +8,6 @@ import Loader from '../components/Loader';
 import Toast from '../components/Toast';
 import { formatDate } from '../utils/formatDate';
 import { ChevronLeft, CalendarClock, ShieldCheck, Check } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 const BookingPage = () => {
   const { expertId } = useParams();
@@ -21,25 +20,6 @@ const BookingPage = () => {
   const { data: expert, isLoading } = useExpertDetail(expertId);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successData, setSuccessData] = useState(null);
-
-  useEffect(() => {
-    if (successData) {
-      // Small delay then confetti
-      setTimeout(() => {
-        const colors = ['#10B981', '#0D9488', '#ffffff', '#6366F1'];
-        for (let i = 0; i < 3; i++) {
-          setTimeout(() => {
-            confetti({
-              particleCount: 80,
-              spread: 100,
-              origin: { y: 0.6, x: Math.random() * 0.5 + 0.25 },
-              colors: colors
-            });
-          }, i * 400);
-        }
-      }, 100);
-    }
-  }, [successData]);
 
   const onSubmit = async (formData) => {
     setIsSubmitting(true);
@@ -62,117 +42,157 @@ const BookingPage = () => {
   if (isLoading) return <Loader />;
   if (!expert || !date || !timeSlot) {
     return (
-      <div className="text-center py-20 flex flex-col items-center">
-        <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-4">
-          <ChevronLeft className="w-8 h-8" />
-        </div>
-        <p className="text-white font-bold text-xl mb-4">Invalid booking details</p>
-        <Link to="/experts" className="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4 transition-colors">Go back to Experts</Link>
+      <div style={{ textAlign: 'center', padding: '80px 0' }}>
+        <p style={{ color: '#EF4444', fontWeight: 500, marginBottom: '16px' }}>Invalid booking details.</p>
+        <Link to="/experts" style={{ color: '#6366F1', textDecoration: 'underline' }}>Go to Experts</Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-slide-up relative">
-      <Link to={`/experts/${expertId}`} className="inline-flex items-center text-slate-400 hover:text-white transition-colors font-semibold mb-8 group">
-        <div className="w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mr-3 group-hover:bg-indigo-500/20 group-hover:border-indigo-500/50 transition-all">
-          <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-        </div>
-        Back to Profile
-      </Link>
-
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
+    <div style={{ minHeight: '100vh', background: '#0A0F1E', paddingTop: '88px', padding: '88px 24px 60px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px', maxWidth: '960px', margin: '0 auto' }} className="md:grid-cols-[1fr_1.5fr]">
         
-        {/* LEFT - Summary Card */}
-        <div className="w-full lg:w-5/12">
-          <div className="glass p-8 lg:sticky lg:top-28">
-            <h3 className="text-lg font-extrabold text-white mb-6">Booking Summary</h3>
-            
-            {/* Expert Mini Profile */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-16 h-16 rounded-full border-2 border-[#0A0F1E] overflow-hidden bg-slate-800 shrink-0">
-                {expert.profileImage ? (
-                  <img src={expert.profileImage} alt={expert.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center font-bold text-white bg-indigo-600">
-                    {expert.name.charAt(0)}
-                  </div>
-                )}
-              </div>
-              <div>
-                <h4 className="font-bold text-white text-lg">{expert.name}</h4>
-                <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">{expert.category}</span>
-              </div>
-            </div>
+        {/* LEFT SUMMARY CARD */}
+        <div style={{
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderRadius: '24px', padding: '32px',
+          backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+          height: 'fit-content', position: 'sticky', top: '88px'
+        }}>
+          <h3 style={{ color: '#F1F5F9', fontSize: '18px', fontWeight: 700, marginBottom: '24px' }}>
+            BOOKING SUMMARY
+          </h3>
 
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
-                  <CalendarClock className="w-5 h-5 text-indigo-400" />
-                </div>
-                <div>
-                  <p className="text-white font-bold">{formatDate(date)}</p>
-                  <p className="text-indigo-400 font-semibold">{timeSlot}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-slate-400">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                60 min session
-              </div>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '12px',
+            padding: '16px',
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: '14px', marginBottom: '20px'
+          }}>
+            <img 
+              src={expert.profileImage} 
+              alt={expert.name} 
+              style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid rgba(99,102,241,0.4)', objectFit: 'cover' }}
+            />
+            <div>
+              <div style={{ color: '#F1F5F9', fontWeight: 700, fontSize: '15px' }}>{expert.name}</div>
+              <div style={{ color: '#818CF8', fontSize: '12px', fontWeight: 500 }}>{expert.category}</div>
             </div>
+          </div>
 
-            <div className="h-px bg-white/[0.06] w-full mb-6" />
-
-            <div className="flex items-center gap-2 text-slate-400 text-sm font-medium">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              🔒 Your data stays private & secure
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            background: 'rgba(99,102,241,0.10)',
+            border: '1px solid rgba(99,102,241,0.2)',
+            borderRadius: '12px', padding: '16px', marginBottom: '12px'
+          }}>
+            <CalendarClock style={{ color: '#818CF8', fontSize: '20px' }} />
+            <div>
+              <div style={{ color: '#F1F5F9', fontWeight: 600, fontSize: '15px' }}>{formatDate(date)}</div>
+              <div style={{ color: '#F1F5F9', fontWeight: 400, fontSize: '14px', opacity: 0.8 }}>{timeSlot}</div>
             </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', fontSize: '12px', marginTop: '20px' }}>
+            <ShieldCheck size={16} /> 🔒 Your data stays private
           </div>
         </div>
 
-        {/* RIGHT - Booking Form */}
-        <div className="w-full lg:w-7/12">
-          <div className="glass p-8">
-            <h2 className="text-2xl font-extrabold text-white mb-8">Complete Your Booking</h2>
-            <BookingForm onSubmit={onSubmit} isSubmitting={isSubmitting} />
-          </div>
+        {/* RIGHT FORM CARD */}
+        <div style={{
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderRadius: '24px', padding: '40px',
+          backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+        }}>
+          <h2 style={{ color: '#F1F5F9', fontSize: '22px', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '28px' }}>
+            Complete Your Booking
+          </h2>
+          <BookingForm onSubmit={onSubmit} isSubmitting={isSubmitting} />
         </div>
       </div>
 
-      {/* Success Modal */}
+      {/* Success Modal Overlay */}
       {successData && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-start justify-center overflow-y-auto">
-          <div className="glass max-w-md w-full mx-4 mt-[15vh] mb-10 p-8 text-center animate-stagger-in relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400" />
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(0,0,0,0.75)',
+          backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px'
+        }}>
+          <div style={{
+            background: '#0F1629',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '28px', padding: '48px 40px',
+            maxWidth: '440px', width: '100%', textAlign: 'center',
+            animation: 'fadeSlideUp 0.4s ease',
+            boxShadow: '0 40px 100px rgba(0,0,0,0.7)',
+            position: 'relative', overflow: 'hidden'
+          }}>
+            {/* Confetti Particles Generator */}
+            {Array.from({ length: 20 }).map((_, i) => {
+              const colors = ['#6366F1','#10B981','#F59E0B','#EF4444','#EC4899','#34D399'];
+              const color = colors[Math.floor(Math.random() * colors.length)];
+              const size = 6 + Math.random() * 8;
+              return (
+                <div key={i} style={{
+                  left: `${Math.random() * 100}%`,
+                  top: '-20px',
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  background: color,
+                  borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+                  animation: `confetti-fall ${2 + Math.random() * 3}s ${Math.random() * 1.5}s ease forwards`,
+                  pointerEvents: 'none', position: 'absolute', zIndex: -1
+                }} />
+              );
+            })}
             
-            <div className="relative mx-auto w-20 h-20 mb-6 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border-2 border-emerald-500 bg-emerald-500/20" />
-              <div className="absolute inset-0 rounded-full border border-emerald-500/50 animate-ripple" style={{ animationDelay: '0s' }} />
-              <div className="absolute inset-0 rounded-full border border-emerald-500/50 animate-ripple" style={{ animationDelay: '0.75s' }} />
-              <Check className="w-10 h-10 text-emerald-400 relative z-10" />
+            <div style={{
+              width: '88px', height: '88px', borderRadius: '50%',
+              background: 'rgba(16,185,129,0.15)',
+              border: '2px solid #10B981',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 24px', fontSize: '36px', position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute', inset: '-12px', borderRadius: '50%',
+                border: '2px solid rgba(16,185,129,0.4)',
+                animation: 'pulse-ring 1.8s ease infinite'
+              }} />
+              <div style={{
+                position: 'absolute', inset: '-24px', borderRadius: '50%',
+                border: '2px solid rgba(16,185,129,0.4)',
+                animation: 'pulse-ring 1.8s ease infinite',
+                animationDelay: '0.6s'
+              }} />
+              <Check size={40} color="#10B981" />
             </div>
 
-            <h2 className="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-2">Booking Confirmed!</h2>
-            <p className="text-slate-400 font-medium mb-8">We've sent a calendar invite to <span className="text-white">{successData.email}</span></p>
-
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 text-left mb-8 space-y-4">
-              <div className="flex justify-between border-b border-white/[0.06] pb-4">
-                <span className="text-slate-500 font-medium">Expert</span>
-                <span className="font-bold text-white">{expert.name}</span>
-              </div>
-              <div className="flex justify-between border-b border-white/[0.06] pb-4">
-                <span className="text-slate-500 font-medium">Date</span>
-                <span className="font-bold text-white">{formatDate(successData.date)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">Time</span>
-                <span className="font-bold text-emerald-400">{successData.timeSlot}</span>
-              </div>
-            </div>
+            <h2 style={{
+              fontSize: '28px', fontWeight: 800, letterSpacing: '-0.03em',
+              background: 'linear-gradient(135deg, #34D399, #10B981)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              marginBottom: '8px'
+            }}>
+              Booking Confirmed!
+            </h2>
+            <p style={{ color: '#94A3B8', marginBottom: '24px' }}>
+              We've sent a calendar invite to <span style={{ color: '#fff' }}>{successData.email}</span>
+            </p>
 
             <Link 
               to="/my-bookings" 
-              className="block w-full py-3.5 rounded-xl bg-white/[0.04] text-white font-bold border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.12] transition-all"
+              style={{
+                display: 'block', width: '100%', padding: '16px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '14px', color: '#fff', fontWeight: 700,
+                textDecoration: 'none'
+              }}
             >
               View My Bookings
             </Link>

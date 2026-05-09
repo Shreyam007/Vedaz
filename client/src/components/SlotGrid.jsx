@@ -7,6 +7,7 @@ const SlotGrid = ({ slots, expertId }) => {
   const groupedSlots = groupSlotsByDate(slots);
   const availableDates = Object.keys(groupedSlots);
   const [activeDate, setActiveDate] = useState(availableDates[0] || null);
+  const [hoveredSlot, setHoveredSlot] = useState(null);
   
   const handleSlotClick = (date, slot) => {
     if (slot.isBooked) return;
@@ -14,22 +15,28 @@ const SlotGrid = ({ slots, expertId }) => {
   };
 
   if (availableDates.length === 0) {
-    return <p className="text-slate-500 italic">No available slots at the moment.</p>;
+    return <p style={{ color: '#64748B', fontStyle: 'italic' }}>No available slots at the moment.</p>;
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Date Tabs (Horizontal Scrollable) */}
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+      <div className="hide-scrollbar" style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '24px', paddingBottom: '4px' }}>
         {availableDates.map(date => (
           <button
             key={date}
             onClick={() => setActiveDate(date)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
-              activeDate === date 
-                ? 'bg-indigo-600 text-white shadow-[0_0_16px_rgba(99,102,241,0.4)]'
-                : 'bg-white/[0.04] border border-white/[0.06] text-slate-400 hover:text-white'
-            }`}
+            style={activeDate === date ? {
+              padding: '10px 18px', borderRadius: '12px', whiteSpace: 'nowrap', cursor: 'pointer',
+              background: 'linear-gradient(135deg, #6366F1, #4F46E5)',
+              color: '#fff', fontWeight: 600, fontSize: '13px', border: 'none',
+              boxShadow: '0 4px 16px rgba(99,102,241,0.4)'
+            } : {
+              padding: '10px 18px', borderRadius: '12px', whiteSpace: 'nowrap', cursor: 'pointer',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: '#94A3B8', fontWeight: 500, fontSize: '13px'
+            }}
           >
             {formatDate(date)}
           </button>
@@ -38,26 +45,49 @@ const SlotGrid = ({ slots, expertId }) => {
 
       {/* Slots Grid for Active Date */}
       {activeDate && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 animate-fade-slide-up" key={activeDate}>
-          {groupedSlots[activeDate].map((slot, index) => (
-            <button
-              key={index}
-              disabled={slot.isBooked}
-              onClick={() => handleSlotClick(activeDate, slot)}
-              className={`relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                slot.isBooked 
-                  ? 'bg-slate-800/50 border border-white/[0.04] text-slate-600 line-through cursor-not-allowed'
-                  : 'bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 hover:border-teal-500/60 hover:shadow-[0_0_12px_rgba(13,148,136,0.3)] active:scale-95 cursor-pointer'
-              }`}
-            >
-              {slot.time}
-              {slot.isBooked && (
-                <span className="absolute -top-2 -right-2 bg-slate-700 text-slate-400 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded shadow-sm z-10">
-                  Taken
-                </span>
-              )}
-            </button>
-          ))}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }} className="animate-fade">
+          {groupedSlots[activeDate].map((slot, index) => {
+            const isHovered = hoveredSlot === index;
+            return (
+              <button
+                key={index}
+                disabled={slot.isBooked}
+                onClick={() => handleSlotClick(activeDate, slot)}
+                onMouseEnter={() => setHoveredSlot(index)}
+                onMouseLeave={() => setHoveredSlot(null)}
+                style={slot.isBooked ? {
+                  padding: '12px 8px', borderRadius: '12px', textAlign: 'center',
+                  background: 'rgba(30,41,59,0.6)',
+                  border: '1px solid rgba(255,255,255,0.05)',
+                  color: '#475569', fontSize: '13px', fontWeight: 600,
+                  cursor: 'not-allowed', textDecoration: 'line-through',
+                  position: 'relative'
+                } : {
+                  padding: '12px 8px', borderRadius: '12px', textAlign: 'center',
+                  background: isHovered ? 'rgba(13,148,136,0.22)' : 'rgba(13,148,136,0.10)',
+                  border: '1px solid rgba(13,148,136,0.35)',
+                  color: '#2DD4BF', fontSize: '13px', fontWeight: 600,
+                  cursor: 'pointer', transition: 'all 0.2s ease',
+                  position: 'relative',
+                  boxShadow: isHovered ? '0 0 20px rgba(13,148,136,0.3)' : 'none',
+                  transform: isHovered ? 'translateY(-2px)' : 'translateY(0)'
+                }}
+              >
+                {slot.time}
+                {slot.isBooked && (
+                  <span style={{
+                    position: 'absolute', top: '-6px', right: '-4px',
+                    background: '#374151', color: '#9CA3AF',
+                    fontSize: '9px', fontWeight: 700, letterSpacing: '0.05em',
+                    padding: '2px 5px', borderRadius: '4px',
+                    textDecoration: 'none'
+                  }}>
+                    TAKEN
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
       )}
     </div>
