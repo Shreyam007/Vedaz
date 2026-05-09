@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
 import useExpertDetail from '../hooks/useExpertDetail';
 import { createBooking } from '../api/bookingApi';
@@ -20,6 +20,13 @@ const BookingPage = () => {
   const { data: expert, isLoading } = useExpertDetail(expertId);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successData, setSuccessData] = useState(null);
+
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const onSubmit = async (formData) => {
     setIsSubmitting(true);
@@ -50,68 +57,107 @@ const BookingPage = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0A0F1E', paddingTop: '88px', padding: '88px 24px 60px' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px', maxWidth: '960px', margin: '0 auto' }} className="md:grid-cols-[1fr_1.5fr]">
+    <div style={{
+      minHeight: '100vh',
+      background: '#0A0F1E',
+      paddingTop: '88px',
+      paddingBottom: '60px',
+      paddingLeft: '24px',
+      paddingRight: '24px',
+    }}>
+      <div style={{
+        maxWidth: '1100px',
+        margin: '0 auto',
+      }}>
         
-        {/* LEFT SUMMARY CARD */}
-        <div style={{
-          background: 'rgba(255,255,255,0.03)',
-          border: '1px solid rgba(255,255,255,0.07)',
-          borderRadius: '24px', padding: '32px',
-          backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
-          height: 'fit-content', position: 'sticky', top: '88px'
-        }}>
-          <h3 style={{ color: '#F1F5F9', fontSize: '18px', fontWeight: 700, marginBottom: '24px' }}>
-            BOOKING SUMMARY
-          </h3>
-
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '12px',
-            padding: '16px',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.06)',
-            borderRadius: '14px', marginBottom: '20px'
-          }}>
-            <img 
-              src={expert.profileImage} 
-              alt={expert.name} 
-              style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid rgba(99,102,241,0.4)', objectFit: 'cover' }}
-            />
-            <div>
-              <div style={{ color: '#F1F5F9', fontWeight: 700, fontSize: '15px' }}>{expert.name}</div>
-              <div style={{ color: '#818CF8', fontSize: '12px', fontWeight: 500 }}>{expert.category}</div>
-            </div>
-          </div>
-
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '10px',
-            background: 'rgba(99,102,241,0.10)',
+        {/* Back button */}
+        <div style={{ marginBottom: '28px' }}>
+          <Link to={`/experts/${expertId}`} style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            color: '#6366F1', background: 'rgba(99,102,241,0.1)',
             border: '1px solid rgba(99,102,241,0.2)',
-            borderRadius: '12px', padding: '16px', marginBottom: '12px'
+            padding: '8px 16px', borderRadius: '10px',
+            cursor: 'pointer', fontSize: '14px', fontWeight: 500,
+            textDecoration: 'none', transition: 'all 0.2s ease'
           }}>
-            <CalendarClock style={{ color: '#818CF8', fontSize: '20px' }} />
-            <div>
-              <div style={{ color: '#F1F5F9', fontWeight: 600, fontSize: '15px' }}>{formatDate(date)}</div>
-              <div style={{ color: '#F1F5F9', fontWeight: 400, fontSize: '14px', opacity: 0.8 }}>{timeSlot}</div>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', fontSize: '12px', marginTop: '20px' }}>
-            <ShieldCheck size={16} /> 🔒 Your data stays private
-          </div>
+            <ChevronLeft size={16} /> Back to Slots
+          </Link>
         </div>
 
-        {/* RIGHT FORM CARD */}
+        {/* TWO COLUMN GRID */}
         <div style={{
-          background: 'rgba(255,255,255,0.03)',
-          border: '1px solid rgba(255,255,255,0.07)',
-          borderRadius: '24px', padding: '40px',
-          backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : '2fr 3fr',
+          gap: '32px',
+          alignItems: 'start',
         }}>
-          <h2 style={{ color: '#F1F5F9', fontSize: '22px', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '28px' }}>
-            Complete Your Booking
-          </h2>
-          <BookingForm onSubmit={onSubmit} isSubmitting={isSubmitting} />
+          
+          {/* LEFT — SUMMARY CARD */}
+          <div style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '24px',
+            padding: '32px',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            position: 'sticky',
+            top: '96px',
+          }}>
+            <h3 style={{ color: '#F1F5F9', fontSize: '18px', fontWeight: 700, marginBottom: '24px' }}>
+              BOOKING SUMMARY
+            </h3>
+
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '12px',
+              padding: '16px',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: '14px', marginBottom: '20px'
+            }}>
+              <img 
+                src={expert.profileImage} 
+                alt={expert.name} 
+                style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid rgba(99,102,241,0.4)', objectFit: 'cover' }}
+              />
+              <div>
+                <div style={{ color: '#F1F5F9', fontWeight: 700, fontSize: '15px' }}>{expert.name}</div>
+                <div style={{ color: '#818CF8', fontSize: '12px', fontWeight: 500 }}>{expert.category}</div>
+              </div>
+            </div>
+
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '10px',
+              background: 'rgba(99,102,241,0.10)',
+              border: '1px solid rgba(99,102,241,0.2)',
+              borderRadius: '12px', padding: '16px', marginBottom: '12px'
+            }}>
+              <CalendarClock style={{ color: '#818CF8', fontSize: '20px' }} />
+              <div>
+                <div style={{ color: '#F1F5F9', fontWeight: 600, fontSize: '15px' }}>{formatDate(date)}</div>
+                <div style={{ color: '#F1F5F9', fontWeight: 400, fontSize: '14px', opacity: 0.8 }}>{timeSlot}</div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', fontSize: '12px', marginTop: '20px' }}>
+              <ShieldCheck size={16} /> 🔒 Your data stays private
+            </div>
+          </div>
+
+          {/* RIGHT — FORM CARD */}
+          <div style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '24px',
+            padding: '40px',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          }}>
+            <h2 style={{ color: '#F1F5F9', fontSize: '22px', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '28px' }}>
+              Complete Your Booking
+            </h2>
+            <BookingForm onSubmit={onSubmit} isSubmitting={isSubmitting} />
+          </div>
+
         </div>
       </div>
 
