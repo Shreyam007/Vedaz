@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A0F1E" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="vedazGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#34D399" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="32" fill="url(#bg)" />
+  <g transform="translate(16, 16) scale(1.333)">
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="url(#vedazGradient)" stroke="url(#vedazGradient)" stroke-width="1.5" stroke-linejoin="round" />
+  </g>
+</svg>
