@@ -10,9 +10,11 @@ const ExpertDetailPage = () => {
   const { id } = useParams();
   const { data: expert, isLoading, isError, error, refetch, updateSlotOptimistically } = useExpertDetail(id);
 
-  useSocket(id, (payload) => {
-    if (payload.expertId === id) {
-      updateSlotOptimistically(payload.date, payload.timeSlot);
+  useSocket(id, {
+    onSlotBooked: (payload) => {
+      if (payload.expertId === id) {
+        updateSlotOptimistically(payload.date, payload.timeSlot);
+      }
     }
   });
 

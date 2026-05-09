@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
-const useSocket = (expertId, onSlotBooked) => {
+const useSocket = (expertId, events = {}) => {
   const socketRef = useRef(null);
 
   useEffect(() => {
@@ -14,8 +14,14 @@ const useSocket = (expertId, onSlotBooked) => {
     });
 
     socketRef.current.on('slotBooked', (data) => {
-      if (onSlotBooked) {
-        onSlotBooked(data);
+      if (events.onSlotBooked) {
+        events.onSlotBooked(data);
+      }
+    });
+
+    socketRef.current.on('bookingStatusUpdated', (data) => {
+      if (events.onBookingStatusUpdated) {
+        events.onBookingStatusUpdated(data);
       }
     });
 
@@ -25,7 +31,7 @@ const useSocket = (expertId, onSlotBooked) => {
       }
       socketRef.current.disconnect();
     };
-  }, [expertId, onSlotBooked]);
+  }, [expertId, events.onSlotBooked, events.onBookingStatusUpdated]);
 
   return socketRef.current;
 };

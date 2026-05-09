@@ -4,6 +4,8 @@ import { Search, CalendarDays, Clock, ArrowRight } from 'lucide-react';
 import { formatDate } from '../utils/formatDate';
 import Loader from '../components/Loader';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import useSocket from '../hooks/useSocket';
 
 const MyBookingsPage = () => {
   const [emailInput, setEmailInput] = useState('');
@@ -19,6 +21,22 @@ const MyBookingsPage = () => {
   }, []);
 
   const { data: bookings, isLoading, isError } = useBookings(emailToSearch);
+  const queryClient = useQueryClient();
+
+  useSocket(null, {
+    onBookingStatusUpdated: (payload) => {
+      if (emailToSearch) {
+        queryClient.setQueryData(['bookings', emailToSearch], (oldData) => {
+          if (!oldData) return oldData;
+          return oldData.map(booking => 
+            booking._id === payload.bookingId 
+              ? { ...booking, status: payload.status } 
+              : booking
+          );
+        });
+      }
+    }
+  });
 
   const handleSearch = (e) => {
     e.preventDefault();
