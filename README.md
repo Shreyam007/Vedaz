@@ -19,13 +19,7 @@
 
 ---
 
-## 📸 Screenshots
 
-| Expert Listing | Expert Detail | Booking Form | My Bookings |
-|---|---|---|---|
-| ![List](https://via.placeholder.com/220x140/1E3A5F/FFFFFF?text=Expert+List) | ![Detail](https://via.placeholder.com/220x140/0D9488/FFFFFF?text=Expert+Detail) | ![Booking](https://via.placeholder.com/220x140/1E3A5F/FFFFFF?text=Booking+Form) | ![MyBookings](https://via.placeholder.com/220x140/0D9488/FFFFFF?text=My+Bookings) |
-
----
 
 ## ✨ Key Features
 
@@ -62,14 +56,14 @@ This single script will:
 ### Backend (`server/.env`)
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/vedaz
-CLIENT_URL=http://localhost:3000
+MONGO_URI=mongodb+srv://vedazAdmin:admin@cluster0.9alal1y.mongodb.net/vedaz_booking?retryWrites=true&w=majority&appName=Cluster0
+CLIENT_URL=https://vedaz-client.vercel.app
 ```
 
 ### Frontend (`client/.env`)
 ```env
-VITE_API_URL=http://localhost:5000/api
-VITE_SOCKET_URL=http://localhost:5000
+VITE_API_URL=https://vedaz-1.onrender.com/api
+VITE_SOCKET_URL=https://vedaz-1.onrender.com
 ```
 
 ---
