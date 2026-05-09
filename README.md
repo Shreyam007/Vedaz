@@ -13,7 +13,7 @@
 
 **A production-grade booking platform with real-time slot updates, atomic race condition prevention, and full CI/CD deployment.**
 
-🔗 **[Live Demo →](https://vedaz.vercel.app)** | 📹 **[Demo Video →](#)**
+🔗 **[Live Demo →](https://vedaz-client.vercel.app/)** | 📹 **[Demo Video →](https://drive.google.com/file/d/11uQtknDSXW5WSs9oaols9nlAncvW7Bno/view?usp=sharing)**
 
 </div>
 
