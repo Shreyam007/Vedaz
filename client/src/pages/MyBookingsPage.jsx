@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useBookings from '../hooks/useBookings';
 import { Search, CalendarDays, Clock, ArrowRight } from 'lucide-react';
 import { formatDate } from '../utils/formatDate';
@@ -10,6 +10,14 @@ const MyBookingsPage = () => {
   const [emailToSearch, setEmailToSearch] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const { data: bookings, isLoading, isError } = useBookings(emailToSearch);
 
   const handleSearch = (e) => {
@@ -78,7 +86,7 @@ const MyBookingsPage = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0A0F1E', paddingTop: '88px', padding: '88px 24px 60px' }}>
+    <div style={{ minHeight: '100vh', background: '#0A0F1E', paddingTop: '88px', paddingBottom: '60px', paddingLeft: '24px', paddingRight: '24px' }}>
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         
         <div style={{ textAlign: 'center' }}>
@@ -96,8 +104,9 @@ const MyBookingsPage = () => {
           borderRadius: '20px', padding: '24px',
           backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
           marginBottom: '32px',
-          display: 'flex', gap: '12px', alignItems: 'center'
-        }} className="flex-col sm:flex-row">
+          display: 'flex', gap: '12px', alignItems: 'center',
+          flexDirection: isMobile ? 'column' : 'row'
+        }}>
           
           <div style={{ flex: 1, position: 'relative', width: '100%' }}>
             <input 
@@ -128,9 +137,8 @@ const MyBookingsPage = () => {
               color: '#fff', fontSize: '14px', fontWeight: 600,
               cursor: 'pointer', whiteSpace: 'nowrap',
               boxShadow: '0 4px 16px rgba(99,102,241,0.35)', fontFamily: 'inherit',
-              width: '100%'
+              width: isMobile ? '100%' : 'auto'
             }}
-            className="sm:w-auto"
           >
             Search
           </button>
@@ -161,7 +169,7 @@ const MyBookingsPage = () => {
         )}
 
         {bookings && bookings.length > 0 && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))', gap: '16px' }} className="sm:grid-cols-1 md:grid-cols-2">
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(420px, 1fr))', gap: '16px' }}>
             {bookings.map((booking, index) => (
               <BookingCard key={booking._id} booking={booking} index={index} getStatusBorder={getStatusBorder} getDaysDiff={getDaysDiff} StatusBadge={StatusBadge} />
             ))}

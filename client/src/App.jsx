@@ -8,9 +8,9 @@ import MyBookingsPage from './pages/MyBookingsPage';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+      <div style={{ minHeight: '100vh', background: '#0A0F1E', color: '#F1F5F9' }}>
         <Navbar />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main>
           <Routes>
             <Route path="/" element={<Navigate to="/experts" replace />} />
             <Route path="/experts" element={<ExpertListPage />} />
