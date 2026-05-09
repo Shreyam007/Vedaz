@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBooking, updateBookingStatus, getBookingsByEmail } from '../controllers/bookingController.js';
+import { createBooking, updateBookingStatus, getBookingsByEmail, getAllBookings } from '../controllers/bookingController.js';
 import { body } from 'express-validator';
 import validate from '../middleware/validate.js';
 
@@ -26,6 +26,7 @@ router.patch('/:id/status',
   updateBookingStatus
 );
 
+router.get('/all', getAllBookings);
 router.get('/', getBookingsByEmail);
 
 export default router;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Calendar, Users, Menu, X } from 'lucide-react';
+import { Calendar, Users, Menu, X, Shield } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
@@ -77,6 +77,19 @@ const Navbar = () => {
             <Calendar size={18} />
             <span>My Bookings</span>
           </Link>
+          
+          <Link
+            to="/admin"
+            style={{
+              color: isActive('/admin') ? '#818CF8' : '#64748B',
+              textDecoration: 'none', fontSize: '13px', fontWeight: 500,
+              display: 'flex', alignItems: 'center', gap: '4px',
+              padding: '6px 12px', marginLeft: '8px'
+            }}
+          >
+            <Shield size={14} />
+            <span>Admin</span>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -133,6 +146,18 @@ const Navbar = () => {
               }}
             >
               <Calendar size={28} /> Bookings
+            </Link>
+            <Link 
+              to="/admin" 
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                textDecoration: 'none', fontSize: '18px', fontWeight: 600,
+                color: isActive('/admin') ? '#818CF8' : '#64748B',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+                marginTop: '12px'
+              }}
+            >
+              <Shield size={20} /> Admin
             </Link>
           </div>
         </div>

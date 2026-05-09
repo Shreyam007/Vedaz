@@ -11,17 +11,24 @@ const categories = ['Technology', 'Finance', 'Health', 'Legal', 'Marketing', 'De
 
 const generateSlots = () => {
   const slots = [];
-  const times = ['09:00 AM', '10:00 AM', '11:00 AM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM'];
-  
-  for (let i = 0; i < 7; i++) { // Next 7 days
+  const times = [
+    '09:00 AM', '10:00 AM', '11:00 AM',
+    '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM'
+  ];
+
+  for (let i = 1; i <= 30; i++) {
     const date = new Date();
     date.setDate(date.getDate() + i);
-    const dateStr = date.toISOString().split('T')[0];
     
-    times.forEach(time => {
-      // Randomly book some slots to show realistic data
-      const isBooked = Math.random() > 0.7;
-      slots.push({ date: dateStr, time, isBooked });
+    // Skip Sundays (day 0)
+    if (date.getDay() === 0) continue;
+
+    const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+    // Add 4-5 random time slots per day (not all 7 — looks more realistic)
+    const shuffled = times.sort(() => Math.random() - 0.5).slice(0, 5);
+    shuffled.forEach(time => {
+      slots.push({ date: dateStr, time, isBooked: false });
     });
   }
   return slots;
@@ -112,8 +119,10 @@ const experts = [
 
 const seedData = async () => {
   try {
-    await Expert.deleteMany();
-    await Booking.deleteMany();
+    await Expert.deleteMany({});
+    await Booking.deleteMany({});
+    console.log('🗑️  Cleared old data');
+    console.log('🌱 Seeding fresh data with 30-day slots...');
     
     const expertsWithSlots = experts.map(exp => ({
       ...exp,
@@ -121,10 +130,10 @@ const seedData = async () => {
     }));
 
     await Expert.insertMany(expertsWithSlots);
-    console.log('Data Imported successfully');
+    console.log('✅ Data Imported successfully');
     process.exit();
   } catch (error) {
-    console.error(`Error with data import: ${error.message}`);
+    console.error(`❌ Error with data import: ${error.message}`);
     process.exit(1);
   }
 };

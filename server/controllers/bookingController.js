@@ -99,3 +99,15 @@ export const getBookingsByEmail = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAllBookings = async (req, res, next) => {
+  try {
+    const bookings = await Booking.find({})
+      .populate('expertId', 'name category')
+      .sort({ createdAt: -1 });
+    
+    res.json({ success: true, data: bookings });
+  } catch (error) {
+    next(error);
+  }
+};

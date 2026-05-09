@@ -4,6 +4,7 @@ import ExpertListPage from './pages/ExpertListPage';
 import ExpertDetailPage from './pages/ExpertDetailPage';
 import BookingPage from './pages/BookingPage';
 import MyBookingsPage from './pages/MyBookingsPage';
+import AdminPage from './pages/AdminPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/experts/:id" element={<ExpertDetailPage />} />
             <Route path="/book/:expertId" element={<BookingPage />} />
             <Route path="/my-bookings" element={<MyBookingsPage />} />
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </main>
       </div>
